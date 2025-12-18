@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:notes/screens/home_screen.dart';
 import 'package:notes/services/validator_servic.dart';
 import 'package:notes/widgets/app_button.dart';
 
@@ -30,77 +31,84 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 18.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Visibility(
-              visible: photo == null,
-              replacement: CircleAvatar(
-                radius: 100,
-                backgroundColor: Colors.black,
-                backgroundImage: Image.file(File(photo?.path ?? "")).image,
-              ),
-              child: CircleAvatar(
-                radius: 100,
-                backgroundColor: Colors.black,
-                child: Icon(Icons.person, size: 170, color: Colors.deepPurple),
-              ),
-            ),
-            SizedBox(height: 20),
-            AppButton(
-              title: "Take a Picture From Camera ",
-              onPressed: () {
-                pickImageFromCamera();
-              },
-            ),
-            SizedBox(height: 20),
-            AppButton(
-              title: "Take a picture From Gallery",
-              onPressed: () {
-                pickImageFromGallery();
-              },
-            ),
-            SizedBox(height: 20),
-            Divider(thickness: 2, color: Colors.deepPurple),
-            SizedBox(height: 20),
-            Form(
-              key:_formKey,
-              child: TextFormField(
-                onTapUpOutside: (value){
-                  FocusScope.of(context).unfocus();
-                },
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Visibility(
+                  visible: photo == null,
+                  replacement: CircleAvatar(
+                    radius: 100,
+                    backgroundColor: Colors.black,
+                    backgroundImage: Image.file(File(photo?.path ?? "")).image,
+                  ),
+                  child: CircleAvatar(
+                    radius: 100,
+                    backgroundColor: Colors.black,
+                    child: Icon(Icons.person, size: 170, color: Colors.deepPurple),
+                  ),
+                ),
+                SizedBox(height: 20),
+                AppButton(
+                  title: "Take a Picture From Camera ",
+                  onPressed: () {
+                    pickImageFromCamera();
+                  },
+                ),
+                SizedBox(height: 20),
+                AppButton(
+                  title: "Take a picture From Gallery",
+                  onPressed: () {
+                    pickImageFromGallery();
+                  },
+                ),
+                SizedBox(height: 20),
+                Divider(thickness: 2, color: Colors.deepPurple),
+                SizedBox(height: 20),
+                Form(
+                  key:_formKey,
+                  child: TextFormField(
+                    onTapUpOutside: (value){
+                      FocusScope.of(context).unfocus();
+                    },
 
-              validator:ValidatorService.nameValidator ,
+                  validator:ValidatorService.nameValidator ,
 
-              decoration: InputDecoration(
-                labelText: "Your Name",
-                enabled: true,
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.deepPurple),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.orange),
-                ),
-              ),
-            ),),
-            ElevatedButton(onPressed: (){
-              _formKey.currentState?.validate();
-            }, child: Text("Done",style:
-              TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
+                  decoration: InputDecoration(
+                    labelText: "Your Name",
+                    enabled: true,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.deepPurple),
+                      borderRadius: BorderRadius.circular(12)
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.green),
+                        borderRadius: BorderRadius.circular(12)
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.red),
+                        borderRadius: BorderRadius.circular(12)
 
-              ),
-            ))
-          ],
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.orange),
+                        borderRadius: BorderRadius.circular(12)
+                    ),
+                  ),
+                ),),
+                SizedBox(height: 20),
+                AppButton(
+                  title: "Confirm",
+                  onPressed: () {
+                   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (v)=>HomeScreen()), (e)=>false) ;
+                  },
+                ),
+              ]
+            ),
+          ),
         ),
       ),
     );
