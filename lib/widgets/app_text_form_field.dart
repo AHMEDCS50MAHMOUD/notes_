@@ -8,12 +8,14 @@ class AppTextFormField extends StatelessWidget {
   final bool? readOnly;
   final void Function()? onTap;
   final String? Function(String?)? validator;
+  final TextEditingController? controller;
 
-  const AppTextFormField({super.key, this.hintText, this.maxLines, this.suffixIcon, this.readOnly, this.onTap, this.validator});
+  const AppTextFormField({super.key, this.hintText, this.maxLines, this.suffixIcon, this.readOnly, this.onTap, this.validator, this.controller});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller:controller ,
 
       onTap: onTap,
       maxLines: maxLines,

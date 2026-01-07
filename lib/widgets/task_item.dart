@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:notes/models/task_model.dart';
 
 
 class TaskItem extends StatelessWidget {
-  const TaskItem({super.key});
+ final TaskModel task;
+  const TaskItem({super.key, required this.task});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +15,7 @@ class TaskItem extends StatelessWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            color: Colors.deepPurple
+            color: task.color,
           ),
           child: Row(
             children: [
@@ -22,11 +24,11 @@ class TaskItem extends StatelessWidget {
                     spacing: 5,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Task Title",style: TextStyle(fontSize: 20
+                      Text(task.taskTitle,style: TextStyle(fontSize: 20
                           ,color: Colors.white)),
-                      Text("October 30,2023",style: TextStyle(fontSize: 16
+                      Text("${task.date}-${task.startTime}",style: TextStyle(fontSize: 16
                           ,color: Colors.white)),
-                      Text("Task Description",style: TextStyle(fontSize: 16
+                      Text(task.description,style: TextStyle(fontSize: 16
                           ,color: Colors.white)),
 
 
@@ -40,7 +42,7 @@ class TaskItem extends StatelessWidget {
               ),
               SizedBox(width: 10,),
               RotatedBox(quarterTurns: 3,
-              child: Text("TODO",style: TextStyle(
+              child: Text(task.statusTExt,style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
                 color: Colors.white

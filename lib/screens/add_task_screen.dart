@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:notes/widgets/app_button.dart';
 import 'package:notes/widgets/app_text_form_field.dart';
+
+import '../models/task_model.dart';
 
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({super.key});
@@ -13,9 +16,18 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   var formKey=GlobalKey<FormState>() ;
   List<MaterialColor> taskColors=[
     Colors.red,
-    Colors.yellow,
+    Colors.deepPurple,
     Colors.green,
+    Colors.blue,
+    Colors.purple,
+    Colors.brown
   ];
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
+  TextEditingController startTimeController = TextEditingController();
+  TextEditingController endTimeController = TextEditingController();
+  int activeColorIndex=-1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +58,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               ),
               ),
                SizedBox(height: 10,),
-              AppTextFormField(hintText: "Enter Task Title",),
+              AppTextFormField(
+                controller: titleController,
+                hintText: "Enter Task Title",),
                SizedBox(height: 20,),
                Text("Description",
                 style: TextStyle(
@@ -55,7 +69,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 ),
               ),
                SizedBox(height: 20,),
-              AppTextFormField(hintText: "Enter Task description",
+              AppTextFormField(
+                controller: descriptionController,
+                hintText: "Enter Task description",
               maxLines: 3,),
                Text("Date",
                 style: TextStyle(
@@ -64,13 +80,17 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 ),
               ),
               SizedBox(height: 20,),
-              AppTextFormField(hintText: "24/12/2025",suffixIcon: const Icon(Icons.date_range),
+              AppTextFormField(
+                controller: dateController,
+                hintText: "24/12/2025",suffixIcon: const Icon(Icons.date_range),
               readOnly: true,
               onTap: (){
                 showDatePicker(context: context, firstDate:DateTime.now() , lastDate: DateTime(3000)
                 ,barrierDismissible: false,
           
-                );
+                ).then((value){
+                  dateController.text=DateFormat.yMMMd().format(value??DateTime.now());
+                });
               },
               ),
               SizedBox(height: 20,),
@@ -80,18 +100,24 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("Start Time",
+                        const Text(
+                          "Start Time",
                           style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold
                           ),
                         ),
                         const SizedBox(height: 16,),
-                        AppTextFormField(hintText: "12:00 PM",
+                        AppTextFormField(
+                          controller: startTimeController,
+                          hintText: "12:00 PM",
                           suffixIcon: const Icon(Icons.alarm),
                         readOnly: true,
                           onTap: (){
-                          showTimePicker(context: context, initialTime: TimeOfDay.now());
+                          showTimePicker(context: context, initialTime: TimeOfDay.now()).then((value){
+                           startTimeController.text=value?.format(context)?? "";
+
+                          });
                           },
                         ),
                               const SizedBox(height: 20,),
@@ -111,10 +137,15 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           ),
                         ),
                         const SizedBox(height: 16,),
-                        AppTextFormField(hintText: "12:00 AM",
+                        AppTextFormField(
+                          controller: endTimeController,
+                          hintText: "12:00 AM",
                           suffixIcon: const Icon(Icons.alarm),
                         readOnly: true,
-                          onTap: (){showTimePicker(context: context, initialTime: TimeOfDay.now());
+                          onTap: (){showTimePicker(context: context, initialTime: TimeOfDay.now()).then((value){
+                            endTimeController.text=value?.format(context)?? "";
+
+                          });
                           },
                         ),
                         const SizedBox(height: 20,),
@@ -126,17 +157,48 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               ),
                SizedBox(height: 20,),
               Row(
-                children: List.generate(3,(index)=>CircleAvatar(
-                  radius: 25,
-                  backgroundColor:taskColors[index],
+                children: List.generate(taskColors.length,(index)=>InkWell(
+                  onTap: (){
+                    setState(() {
+                      activeColorIndex=index;
+                    });
+                  },
+                  child: CircleAvatar(
+                    radius: 25,
+                    backgroundColor:taskColors[index],
+                    child:activeColorIndex==index? Icon(Icons.check,color: Colors.white,):null,
+                  ),
                 ) )
 
                 ,
               ),
               SizedBox(height: 20,),
 
-              AppButton(title: "confirm",onPressed: (){
-                formKey.currentState?.validate();
+              AppButton(title: "Confirm",onPressed: (){
+                if((formKey.currentState?.validate()??false)){
+                  if(activeColorIndex==-1){
+                    showDialog(context: context, builder: (context)=>AlertDialog(
+                      title: Text("Error!"),
+                      content: Text(" Please select a color"),
+
+                      
+                    ));
+                    return;
+                    
+                  }
+
+
+                  
+                  tasks.add(TaskModel(taskTitle: titleController.text,
+                      date: dateController.text,
+                      startTime: startTimeController.text,
+                      endTime: endTimeController.text,
+                      description: descriptionController.text,
+                      statusTExt:"TODO" ,
+                      color: taskColors[activeColorIndex]));
+                  Navigator.pop(context);
+                }
+
 
               },)
             ],

@@ -3,7 +3,8 @@ import 'package:notes/screens/add_task_screen.dart';
 import 'package:notes/widgets/app_button.dart';
 
 class DateAndAddTaskRow extends StatelessWidget {
-  const DateAndAddTaskRow({super.key});
+ final void Function()? onPressed;
+  const DateAndAddTaskRow({super.key, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +17,7 @@ class DateAndAddTaskRow extends StatelessWidget {
 
         ),
         SizedBox(width: 150,child: AppButton(title: "Add Task",
-        onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder:(context)=>AddTaskScreen()));
-        },
+        onPressed:onPressed
         ),)
 
 
