@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:lottie/lottie.dart';
+import 'package:notes/app_strings.dart';
 import 'package:notes/models/task_model.dart';
+import 'package:notes/models/user_model.dart';
 import 'package:notes/widgets/date_and_add_task_row.dart';
 import 'package:notes/widgets/date_container.dart';
 import 'package:notes/widgets/home_app_bar.dart';
@@ -17,15 +20,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  UserModel? user=Hive.box<UserModel>("user").getAt(0);
+
+
   @override
   Widget build(BuildContext context) {
+    List<TaskModel>tasks=Hive.box<TaskModel>(AppStrings.tasksBox).values.toList();
     return Scaffold(
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: ListView(
             children: [
-              HomeAppBar(),
+              HomeAppBar(user: user!,),
               SizedBox(height: 20,),
               DateAndAddTaskRow(
                 onPressed:  ()async{

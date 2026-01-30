@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:lottie/lottie.dart';
+import 'package:notes/app_strings.dart';
+import 'package:notes/models/user_model.dart';
 import 'package:notes/screens/auth_screen.dart';
+import 'package:notes/screens/home_screen.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -42,7 +46,11 @@ class _SplashScreenState extends State<SplashScreen> {
   }
   void nextScreen(){
 Future.delayed(Duration(seconds:5),(){
-  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>AuthScreen()));
+
+if(Hive.box<UserModel>(AppStrings.userBox).isNotEmpty)
+  {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomeScreen()));}
+else{
+Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>AuthScreen()));}
 });
 
   }

@@ -1,8 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:notes/app_strings.dart';
+import 'package:notes/models/user_model.dart';
+import 'package:notes/screens/auth_screen.dart';
 
 
 class HomeAppBar extends StatelessWidget {
-  const HomeAppBar({super.key});
+  final UserModel user;
+
+  const HomeAppBar({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -11,17 +19,17 @@ class HomeAppBar extends StatelessWidget {
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text(
-                "Hello, Ahmed",
-                style: TextStyle(
+                "Hello, ${user.name}",
+                style: const TextStyle(
                   fontSize: 30,
                   color: Colors.deepPurple,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              Text("Have a nice day", style: TextStyle(fontSize: 18)),
+              const Text("Have a nice day", style: TextStyle(fontSize: 18)),
             ],
           ),
         ),
@@ -46,8 +54,15 @@ class HomeAppBar extends StatelessWidget {
         const SizedBox(width: 10),
         CircleAvatar(
           radius: 30,
-          backgroundImage: Image.asset("assets/images/bat.jpg").image,
+          backgroundImage: FileImage(File(user.image)),
         ),
+        IconButton(
+            onPressed: () {
+              Hive.box<UserModel>(AppStrings.userBox).clear();
+              Navigator.pushAndRemoveUntil(context,
+                  MaterialPageRoute(builder: (context) => const AuthScreen()), (e) => false);
+            },
+            icon: const Icon(Icons.logout_rounded, color: Colors.red,))
       ],
     );
   }

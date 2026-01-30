@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
+import 'package:notes/app_strings.dart';
 import 'package:notes/widgets/app_button.dart';
 import 'package:notes/widgets/app_text_form_field.dart';
 
@@ -15,7 +17,7 @@ class AddTaskScreen extends StatefulWidget {
 class _AddTaskScreenState extends State<AddTaskScreen> {
   var formKey=GlobalKey<FormState>() ;
   List<MaterialColor> taskColors=[
-    Colors.red,
+    Colors.yellow,
     Colors.deepPurple,
     Colors.green,
     Colors.blue,
@@ -188,15 +190,14 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   }
 
 
-                  
-                  tasks.add(TaskModel(taskTitle: titleController.text,
+                Hive.box<TaskModel>(AppStrings.tasksBox).add(TaskModel(taskTitle: titleController.text,
                       date: dateController.text,
                       startTime: startTimeController.text,
                       endTime: endTimeController.text,
                       description: descriptionController.text,
                       statusTExt:"TODO" ,
-                      color: taskColors[activeColorIndex]));
-                  Navigator.pop(context);
+                      color: taskColors[activeColorIndex].toARGB32())).then((v){  Navigator.pop(context);});
+
                 }
 
 

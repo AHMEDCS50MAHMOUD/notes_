@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:notes/models/user_model.dart';
 import 'package:notes/screens/home_screen.dart';
 import 'package:notes/services/validator_servic.dart';
 import 'package:notes/widgets/app_button.dart';
@@ -27,7 +29,19 @@ class _AuthScreenState extends State<AuthScreen> {
     photo = await picker.pickImage(source: ImageSource.gallery);
     setState(() {});
   }
+TextEditingController nameController=TextEditingController();
+  addUser()async{
+    var myBox=Hive.box<UserModel>("user");
+    await myBox.clear();
 
+    myBox.add(UserModel(image: photo?.path??"",
+        name: nameController.text)).then((v){
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (v)=>HomeScreen()), (e)=>false) ;
+    }).catchError((e){
+
+    });
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +57,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   replacement: CircleAvatar(
                     radius: 100,
                     backgroundColor: Colors.black,
-                    backgroundImage: Image.file(File(photo?.path ?? "")).image,
+                    backgroundImage: Image.file(File(photo?.path ??"")).image,
                   ),
                   child: CircleAvatar(
                     radius: 100,
@@ -71,6 +85,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 Form(
                   key:_formKey,
                   child: TextFormField(
+                    controller:nameController ,
                     onTapUpOutside: (value){
                       FocusScope.of(context).unfocus();
                     },
@@ -103,7 +118,20 @@ class _AuthScreenState extends State<AuthScreen> {
                 AppButton(
                   title: "Confirm",
                   onPressed: () {
-                   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (v)=>HomeScreen()), (e)=>false) ;
+                    if(photo==null){
+                      showDialog(context: context, builder: (context){
+                        return AlertDialog(
+                          title:Center(child: Icon(Icons.error_outline,color: Colors.red,size: 50,)),
+                         content:  Text("Please Select Image",textAlign: TextAlign.center,),);
+
+                      });
+                      return;
+                    }
+                    addUser();
+
+
+
+
                   },
                 ),
               ]
