@@ -2,14 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:notes/models/task_model.dart';
 
 
+
+
 class TaskItem extends StatelessWidget {
  final TaskModel task;
-  const TaskItem({super.key, required this.task});
+ final void Function(DismissDirection)? onDismissed;
+  const TaskItem({super.key, required this.task, this.onDismissed});
 
   @override
   Widget build(BuildContext context) {
     return Dismissible(
         key: UniqueKey(),
+        background: Container(
+          height: 111,
+          color: Colors.red,
+          child: Icon(Icons.delete,color: Colors.white,),
+        ),
+        secondaryBackground: Container(
+          height: 111,
+          color: Colors.green,
+          child: Icon(Icons.incomplete_circle,color: Colors.white,),
+        ),
+        behavior: HitTestBehavior.translucent,
+        onDismissed:onDismissed ,
         child: Container(
           padding: const EdgeInsets.all(16),
           width: double.infinity,

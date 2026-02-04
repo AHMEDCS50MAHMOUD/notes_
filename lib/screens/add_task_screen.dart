@@ -30,6 +30,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   TextEditingController startTimeController = TextEditingController();
   TextEditingController endTimeController = TextEditingController();
   int activeColorIndex=-1;
+  TimeOfDay? startTime;
+  TimeOfDay? endTime;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,7 +118,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           suffixIcon: const Icon(Icons.alarm),
                         readOnly: true,
                           onTap: (){
-                          showTimePicker(context: context, initialTime: TimeOfDay.now()).then((value){
+                          showTimePicker(context: context,
+                              initialTime: TimeOfDay.now()).then((value){
+                                startTime=value;
+
                            startTimeController.text=value?.format(context)?? "";
 
                           });
@@ -142,9 +147,19 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         AppTextFormField(
                           controller: endTimeController,
                           hintText: "12:00 AM",
+                          validator: (v){
+                            if(startTime!=null)
+                            { if(endTime?.isBefore(startTime!)??false){
+                            return "End Time must be after Start Time";
+                            }
+                            }
+                          },
                           suffixIcon: const Icon(Icons.alarm),
                         readOnly: true,
-                          onTap: (){showTimePicker(context: context, initialTime: TimeOfDay.now()).then((value){
+                          onTap: (){showTimePicker(context: context,
+                              initialTime: TimeOfDay.now()).then((value){
+                                endTime=value;
+
                             endTimeController.text=value?.format(context)?? "";
 
                           });
